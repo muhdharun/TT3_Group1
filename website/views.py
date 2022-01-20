@@ -4,6 +4,7 @@ from . import db
 from .models import Post
 import json
 import random
+from flask_cors import cross_origin
 
 views = Blueprint('views', __name__)
 
@@ -100,6 +101,7 @@ def updatePost(id):
         #return render_template("update.html", user=current_user)
 
 @views.route('/getAllPosts', methods=['GET'])
+@cross_origin()
 def getAllPosts():
     response = None
     try:
