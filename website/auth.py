@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, flash, redirect, url_for
+from flask import Blueprint, render_template, request, flash, redirect, url_for, jsonify
 from .models import User
 from werkzeug.security import generate_password_hash, check_password_hash
 from . import db
@@ -36,8 +36,8 @@ def signup():
     if request.method == "POST":
         email = request.form.get('email')
         name = request.form.get('name')
-        password1 = request.form.get('password1')
-        password2 = request.form.get('password2')
+        password1 = request.form.get('password')
+        password2 = request.form.get('password')
         birthday = request.form.get('birthday')
         phone = request.form.get('phone')
         city = request.form.get('city')
@@ -48,6 +48,7 @@ def signup():
         
         if user:
             flash('Email is already in use.', category='error')
+            return 'Email is already in use.'
         elif len(email) < 4:
             flash('Email must be greater than 4 characters.', category='error')
         elif len(name) < 1:
@@ -70,6 +71,7 @@ def signup():
             user = User.query.filter_by(email=email).first()
             login_user(user, remember=True)
             flash('Account created successfully.', category='success')
-            return redirect(url_for('views.home'))
+            return "Signed up succesfully"
+            #return redirect(url_for('views.home'))
     return "Please sign up"
     #return render_template("signup.html", user=current_user)
