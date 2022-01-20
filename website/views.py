@@ -4,4 +4,4 @@ views = Blueprint('views', __name__)
 
 @views.route('/')
 def home():
-    pass
+    return "hello world"
