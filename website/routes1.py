@@ -1,4 +1,4 @@
-from flask import Blueprint, Flask, Response, request
+from flask import Blueprint, Flask, Response, request, jsonify
 from .models import User,Post,LikedPost,PostComment
 from . import db
 import json
@@ -11,13 +11,18 @@ def getAllPosts():
     response = None
     try:
 
-        data = {
-        "Post_ID": 1,
-        "Post_Title": "Relatable",
-        "Post_Description": "Walking up and down the aisles for what seems like hours.",
-        "Post_image": "https://preview.redd.it/jjvqtw9iapb81.gif?format=mp4&s=e333e78478df813b5b18ecd0905efc8b00ae210c"
-    }
+    #     data = {
+    #     "Post_ID": 1,
+    #     "Post_Title": "Relatable",
+    #     "Post_Description": "Walking up and down the aisles for what seems like hours.",
+    #     "Post_image": "https://preview.redd.it/jjvqtw9iapb81.gif?format=mp4&s=e333e78478df813b5b18ecd0905efc8b00ae210c"
+    # }
 
+        #data = db.Query(Post)
+        posts = Post.query.all()
+        data = []
+        for post in posts:
+            data.append({"Post_ID": post.id, "Post_Title": post.title, "Post_Description": post.description, "Post_Image": post.image})
         response = Response(
             response=json.dumps(data),
             status=200,
@@ -40,7 +45,14 @@ def createPost():
     response = None
     try:
         postId = random.randint(1,1000000)
-        post = {"Post_ID": postId, "Post_Title": request.form["title"], "Post_Description": request.form["description"], "Post_Image": request.form["image"]}
+        #post = {"Post_ID": postId, "Post_Title": request.form["title"], "Post_Description": request.form["description"], "Post_Image": request.form["image"]}
+        post = Post(
+            id = postId,
+            title = request.form.get("title"),
+            description = request.form.get("description"),
+            image = request.form.get("image"),
+            user_id = request.form.get("userId"), #temporary
+        )
         db.session.add(post)
         db.session.commit()
 
