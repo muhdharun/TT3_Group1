@@ -22,7 +22,7 @@ def getAllPosts():
         posts = Post.query.all()
         data = []
         for post in posts:
-            data.append({"Post_ID": post.id, "Post_Title": post.title, "Post_Description": post.description, "Post_Image": post.image})
+            data.append({"Post_ID": post.id, "Post_Title": post.title, "Post_Description": post.description, "Post_Image": post.image, "User_Id": post.user_id})
         response = Response(
             response=json.dumps(data),
             status=200,
@@ -74,6 +74,27 @@ def createPost():
     return response
 
 #get logged in user's posts
-@routes1.route('/getPosts', methods=['GET'])
-def getPosts():
-    return "own posts"
+@routes1.route('/getPosts/<userId>', methods=['GET'])
+def getPosts(userId):
+    response = None
+    try:
+        posts = Post.query.filter_by(user_id=userId)
+        data = []
+        for post in posts:
+            data.append({"Post_ID": post.id, "Post_Title": post.title, "Post_Description": post.description, "Post_Image": post.image, "User_Id": post.user_id})
+        response = Response(
+            response=json.dumps(data),
+            status=200,
+            mimetype="application/json"
+        )
+    
+    except Exception as ex:
+        print(ex)
+
+        response = Response(
+            response=json.dumps({"message":"cannot get user's posts"}),
+            status=500,
+            mimetype="application/json"
+        )
+
+    return response
