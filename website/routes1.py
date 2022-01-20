@@ -98,3 +98,34 @@ def getPosts(userId):
         )
 
     return response
+
+@routes1.route('/searchPost/<searchQuery>', methods=['GET'])
+def searchPost(searchQuery):
+    response = None
+    try:
+        search = "%{}%".format(searchQuery)
+        posts = Post.query.filter(Post.title.like(search)).all()
+        data = []
+        for post in posts:
+            data.append({"Post_ID": post.id, "Post_Title": post.title, "Post_Description": post.description, "Post_Image": post.image, "User_Id": post.user_id})
+        
+        posts = Post.query.filter(Post.description.like(search)).all()
+        for post in posts:
+            data.append({"Post_ID": post.id, "Post_Title": post.title, "Post_Description": post.description, "Post_Image": post.image, "User_Id": post.user_id})
+
+        response = Response(
+            response=json.dumps(data),
+            status=200,
+            mimetype="application/json"
+        )
+    
+    except Exception as ex:
+        print(ex)
+
+        response = Response(
+            response=json.dumps({"message":"cannot find posts"}),
+            status=500,
+            mimetype="application/json"
+        )
+
+    return response
