@@ -31,6 +31,7 @@ users_to_add = [{
 
 def create_app():
     app = Flask(__name__)
+    CORS(app, resources={ r'/*': {'origins': 'http://localhost:8000'}})
     app.config['SECRET_KEY'] = '123'
     app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{DB_NAME}'
     db.init_app(app)
