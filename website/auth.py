@@ -16,12 +16,14 @@ def login():
             if check_password_hash(user.password, password):
                 flash('Logged in successfully.', category='success')
                 login_user(user, remember=True)
-                return redirect(url_for('views.home'))
+                return "Logged in"
+                #return redirect(url_for('views.home'))
             else:
                 flash('Incorrect password.', category='error')
         else:
             flash('Email does not exist.', category='error')
-    return render_template("login.html", user=current_user)
+    return "Please log in"
+    #return render_template("login.html", user=current_user)
 
 @auth.route('/logout')
 @login_required
@@ -36,6 +38,11 @@ def signup():
         name = request.form.get('name')
         password1 = request.form.get('password1')
         password2 = request.form.get('password2')
+        birthday = request.form.get('birthday')
+        phone = request.form.get('phone')
+        city = request.form.get('city')
+        country = request.form.get('country')
+        age = request.form.get('age')
         
         user = User.query.filter_by(email=email).first()
         
@@ -52,11 +59,17 @@ def signup():
         else:
             new_user = User(email=email
                             , name=name
-                            , password=generate_password_hash(password1, method='sha256'))
+                            , password=generate_password_hash(password1, method='sha256')
+                            , birthday=birthday
+                            , phone=phone
+                            , city=city
+                            , country=country
+                            , age=age)
             db.session.add(new_user)
             db.session.commit()
             user = User.query.filter_by(email=email).first()
             login_user(user, remember=True)
             flash('Account created successfully.', category='success')
             return redirect(url_for('views.home'))
-    return render_template("signup.html", user=current_user)
+    return "Please sign up"
+    #return render_template("signup.html", user=current_user)
