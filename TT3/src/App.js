@@ -1,19 +1,22 @@
 import Homepage from './components/Homepage.js';
 import Preferences from './components/Preferences.js';
 import Login from './components/Login.js';
+import Header from './components/Header.js';
 
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+
+import { BrowserRouter, Route, Routes, Router } from 'react-router-dom';
 import React, { useState } from 'react';
 
 
 function App() {
   const [token, setToken] = useState();
+  // if no token, will reload login page
   if(!token) {
     return <Login setToken={setToken} />
   }
   return (
-    <div className="wrapper">
-      <h1>DBS WORKSPACE</h1>
+    <Router>
+    <div className="App">
       <BrowserRouter>
         <Routes>
           <Route path="/homepage">
@@ -25,6 +28,7 @@ function App() {
         </Routes>
       </BrowserRouter>
     </div>
+    </Router>
   );
 }
 
