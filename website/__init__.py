@@ -3,6 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from os import path
 from werkzeug.security import generate_password_hash
 from flask_login import LoginManager
+from flask_cors import CORS, cross_origin
 
 db = SQLAlchemy()
 DB_NAME = "database.db"
