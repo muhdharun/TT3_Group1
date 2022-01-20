@@ -1,12 +1,6 @@
 from . import db
 from flask_login import UserMixin
-from sqlalchmey import ForeignKey
-
-user_post_table = db.Table('user_project_table',
-                              db.Column('user_id', db.Integer, db.ForeignKey('user.id'), primary_key=True),
-                              db.Column('post_id', db.Integer, db.ForeignKey('post.id'), primary_key=True)
-)
-
+from sqlalchemy import ForeignKey
 
 #Added in password
 class User(db.Model, UserMixin):
@@ -41,3 +35,4 @@ class PostComment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     post_id = db.Column(db.Integer, db.ForeignKey('post.id'))
+    comment = db.db.Column(db.String(1000))
