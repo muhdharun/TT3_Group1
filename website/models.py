@@ -21,6 +21,7 @@ class User(db.Model, UserMixin):
     age = db.Column(db.Integer, nullable=False)
     liked_posts = db.relationship('LikedPost')
     posts = db.relationship('Post')
+    comments = db.relationship('PostComment')
 
 
 class Post(db.Model):
@@ -30,7 +31,13 @@ class Post(db.Model):
     post_image = db.Column(db.String()) #Not quite sure how database adds in an image
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     liked_posts = db.relationship('LikedPost')
+    comments = db.relationship('PostComment')
     
 class LikedPost(db.Model):
     user_id = db.Column(db.Integer, ForeignKey('user.id'), primary_key=True, autoincrement=False)
     post_id = db.Column(db.Integer, ForeignKey('post.id'), primary_key=True, autoincrement=False)
+    
+class PostComment(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    post_id = db.Column(db.Integer, db.ForeignKey('post.id'))
