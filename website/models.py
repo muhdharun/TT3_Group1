@@ -19,18 +19,18 @@ class User(db.Model, UserMixin):
     city = db.Column(db.String(50), nullable=False)
     country = db.Column(db.String(50), nullable=False)
     age = db.Column(db.Integer, nullable=False)
-    liked_posts = db.relationship('LikedPost')
+    liked_post = db.relationship('LikedPost')
     posts = db.relationship('Post')
     comments = db.relationship('PostComment')
 
 
 class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    post_title = db.Column(db.String(150), nullable=False)
-    post_title = db.Column(db.String(100000))
-    post_image = db.Column(db.String()) #Not quite sure how database adds in an image
+    title = db.Column(db.String(150), nullable=False)
+    description = db.Column(db.String(100000))
+    image = db.Column(db.String()) #Not quite sure how database adds in an image
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    liked_posts = db.relationship('LikedPost')
+    liked_post = db.relationship('LikedPost')
     comments = db.relationship('PostComment')
     
 class LikedPost(db.Model):
