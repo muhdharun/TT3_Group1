@@ -1,5 +1,8 @@
 from flask import Blueprint, Flask, Response, request
+from .models import User,Post,LikedPost,PostComment
+from . import db
 import json
+import random
 
 routes1 = Blueprint('routes1', __name__)
 
@@ -36,13 +39,22 @@ def getAllPosts():
 def createPost():
     response = None
     try:
-        
+        postId = random.randint(1,1000000)
+        post = {"Post_ID": postId, "Post_Title": request.form["title"], "Post_Description": request.form["description"], "Post_Image": request.form["image"]}
+        db.session.add(post)
+        db.session.commit()
+
+        response = Response(
+            response=json.dumps({"message":"post created", "id":f'{postId}'}),
+            status=200,
+            mimetype="application/json"
+        )
 
     except Exception as ex:
         print(ex)
 
         response = Response(
-            response=json.dumps({"message":"cannot get posts"}),
+            response=json.dumps({"message":"cannot create post"}),
             status=500,
             mimetype="application/json"
         )
