@@ -2,12 +2,6 @@ from . import db
 from flask_login import UserMixin
 from sqlalchemy import ForeignKey
 
-user_post_table = db.Table('user_project_table',
-                              db.Column('user_id', db.Integer, db.ForeignKey('user.id'), primary_key=True),
-                              db.Column('post_id', db.Integer, db.ForeignKey('post.id'), primary_key=True)
-)
-
-
 #Added in password
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
