@@ -19,7 +19,7 @@ const App = () => {
   useEffect(() => {
     const fetchPosts = async () => {
       try{
-        const response = await api.get('https://localhost:8000/getAllPosts')
+        const response = await api.get('http://localhost:8000/getAllPosts')
         setPosts(response.data)
       } catch (err) {
         if (err.response) {
