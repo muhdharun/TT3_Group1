@@ -1,9 +1,9 @@
-from flask import Blueprint, render_template, request, flash, redirect, url_for, jsonify
+from flask import Blueprint, render_template, request, flash, redirect, url_for, jsonify, Response
 from .models import User
 from werkzeug.security import generate_password_hash, check_password_hash
 from . import db
 from flask_login import login_user, login_required, logout_user, current_user
-
+import json
 auth = Blueprint("auth", __name__)
 
 @auth.route('/login', methods=['GET','POST'])
@@ -15,23 +15,53 @@ def login():
         if user:
             if check_password_hash(user.password, password):
                 flash('Logged in successfully.', category='success')
+                logged_in_user = {"User_Id": user.id
+                             , "Name": user.name
+                             , "Email": user.email
+                             , "Birthday": user.birthday
+                             , "City": user.city
+                             , "Country": user.country
+                             , "Age": user.age
+                             , "Liked_Post": user.liked_post
+                             , "Posts": user.posts
+                             , "Comments": user.comments}
+                response = Response(response=json.dumps(logged_in_user),
+                                    status=200,
+                                    mimetype="application/json"
+                                    )
                 login_user(user, remember=True)
-                return "Logged in"
                 #return redirect(url_for('views.home'))
+                return response
             else:
                 flash('Incorrect password.', category='error')
-                return "Incorrect password"
+                response = Response(response=json.dumps({"message":"Incorrect password."})
+                                    , status=500
+                                    , mimetype="application/json")
+                #return "Incorrect password"
+                return response
         else:
             flash('Email does not exist.', category='error')
-            return "Email does not exist"
-    return "Please log in"
+            response = Response(response=json.dumps({"message":"Email does not exist."})
+                                , status=500
+                                , mimetype="application/json")
+            return response
+            #return "Email does not exist"
+    
+    response = Response(response=json.dumps({"message":"Please log in"})
+                        , status=500
+                        , mimetype="application/json")
+    return response
     #return render_template("login.html", user=current_user)
 
 @auth.route('/logout')
 @login_required
 def logout():
     logout_user()
-    return redirect(url_for('auth.login'))
+    response = Response(response=json.dumps({"message":"Logged out."})
+                        , status=200
+                        , mimetype="application/json")
+    return response
+    #return redirect(url_for('auth.login'))
 
 @auth.route('/sign-up', methods=['GET','POST'])
 def signup():
@@ -71,9 +101,28 @@ def signup():
             db.session.add(new_user)
             db.session.commit()
             user = User.query.filter_by(email=email).first()
+            logged_in_user = {"User_Id": user.id
+                             , "Name": user.name
+                             , "Email": user.email
+                             , "Birthday": user.birthday
+                             , "City": user.city
+                             , "Country": user.country
+                             , "Age": user.age
+                             , "Liked_Post": user.liked_post
+                             , "Posts": user.posts
+                             , "Comments": user.comments}
+            response = Response(response=json.dumps(logged_in_user),
+                                status=200,
+                                mimetype="application/json"
+                                )
             login_user(user, remember=True)
             flash('Account created successfully.', category='success')
-            return "Signed up succesfully"
+            #return "Signed up succesfully"
+            return response
             #return redirect(url_for('views.home'))
-    return "Please sign up"
+    response = Response(response=json.dumps({"message":"Please sign up"})
+                        , status=500
+                        , mimetype="application/json")
+    return response
+    #return "Please sign up"
     #return render_template("signup.html", user=current_user)

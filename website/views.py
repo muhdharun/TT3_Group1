@@ -8,6 +8,7 @@ import random
 views = Blueprint('views', __name__)
 
 @views.route('/', methods=['GET'])
+#@login_required
 def home():
     response = None
     try:
@@ -32,19 +33,30 @@ def home():
         )
 
     return response
+    #return render_template("home.html", user=current_user, response=response)
 
 @views.route('/deletePost/<int:id>', methods=['GET','DELETE'])
 def deletePost(id):
     post_to_delete = Post.query.get_or_404(id)
     try:
-        db.session.delete(post_to_delete)
-        db.session.commit()
-        flash('Post deleted successfully.', category='success')
-        return "deleted post"
-        #return redirect(url_for("views.home"))
+        if post_to_delete:
+            if (post_to_delete.user_id == current_user.id):
+                db.session.delete(post_to_delete)
+                db.session.commit()
+                flash('Post deleted successfully.', category='success')
+                response = Response(response=json.dumps({"message":"Post deleted successfully."})
+                        , status=200
+                        , mimetype="application/json")
+                return response
+                #return "deleted post"    
+                #return redirect(url_for("views.home"))
     except:
         flash('Problem occurred while deleting post, try again or contact support.', category='error')
-        return "Failed to delete"
+        response = Response(response=json.dumps({"message":"Failed to delete."})
+                            , status=500
+                            , mimetype="application/json")
+        return response
+        #return "Failed to delete"
         #return redirect(url_for("views.home"))
     
 @views.route('/updatePost/<int:id>', methods=['GET','PATCH'])
@@ -63,16 +75,28 @@ def updatePost(id):
         
         try:
             db.session.commit()
-            return "successfilly updated"
+            response = Response(response=json.dumps({"message":"Update success"})
+                        , status=200
+                        , mimetype="application/json")
+            return response
+            #return "successfully updated"
             #return redirect(url_for("views.home"))
         
         except:
             flash('Problem occurred while editing post, try again or contact support.', category='error')
-            return "Failed to update"
+            response = Response(response=json.dumps({"message":"Update failed"})
+                        , status=500
+                        , mimetype="application/json")
+            return response
+            #return "Failed to update"
             #return redirect(url_for("views.home"))
             
     else:
-        return "Welcome to update"
+        response = Response(response=json.dumps({"message":"Welcome to Update"})
+                        , status=200
+                        , mimetype="application/json")
+        return response
+        #return "Welcome to update"
         #return render_template("update.html", user=current_user)
 
 @views.route('/getAllPosts', methods=['GET'])
