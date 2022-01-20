@@ -9,22 +9,24 @@ views = Blueprint('views', __name__)
 def home():
     return "hello world"
 
-@views.route('/deletePost/<int:id>')
+@views.route('/deletePost/<int:id>', methods=['GET','DELETE'])
 def deletePost(id):
     post_to_delete = Post.query.get_or_404(id)
     try:
         db.session.delete(post_to_delete)
         db.session.commit()
         flash('Post deleted successfully.', category='success')
-        return redirect(url_for("views.home"))
+        return "deleted post"
+        #return redirect(url_for("views.home"))
     except:
         flash('Problem occurred while deleting post, try again or contact support.', category='error')
-        return redirect(url_for("views.home"))
+        return "Failed to delete"
+        #return redirect(url_for("views.home"))
     
-@views.route('/updatePost/<int:id>', methods=['GET','POST'])
+@views.route('/updatePost/<int:id>', methods=['GET','PATCH'])
 def updatePost(id):
     post_to_update = Post.query.get_or_404(id)
-    if request.method == 'POST':
+    if request.method == 'PATCH':
         title = request.form['title']
         description = request.form['description']
         image = request.form['image']
@@ -37,11 +39,14 @@ def updatePost(id):
         
         try:
             db.session.commit()
-            return redirect(url_for("views.home"))
+            return "successfilly updated"
+            #return redirect(url_for("views.home"))
         
         except:
             flash('Problem occurred while editing post, try again or contact support.', category='error')
-            return redirect(url_for("views.home"))
+            return "Failed to update"
+            #return redirect(url_for("views.home"))
             
     else:
-        return render_template("update.html", user=current_user)
+        return "Welcome to update"
+        #return render_template("update.html", user=current_user)

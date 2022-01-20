@@ -20,8 +20,10 @@ def login():
                 #return redirect(url_for('views.home'))
             else:
                 flash('Incorrect password.', category='error')
+                return "Incorrect password"
         else:
             flash('Email does not exist.', category='error')
+            return "Email does not exist"
     return "Please log in"
     #return render_template("login.html", user=current_user)
 
