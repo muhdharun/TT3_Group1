@@ -3,6 +3,38 @@ import Tasks from './components/Tasks'
 import AddTask from './components/AddTask'
 import { useEffect, useState } from 'react'
 import api from './api/posts'
+import Homepage from './components/Homepage.js';
+import Preferences from './components/Preferences.js';
+import Login from './components/Login.js';
+import Header from './components/Header.js';
+
+import { BrowserRouter, Route, Routes, Router } from 'react-router-dom';
+import React, { useState } from 'react';
+
+
+function App() {
+    const [token, setToken] = useState();
+    // if no token, will reload login page
+    if(!token) {
+      return <Login setToken={setToken} />
+    }
+    return (
+      <Router>
+      <div className="App">
+        <BrowserRouter>
+          <Routes>
+            <Route path="/homepage">
+              <Homepage />
+            </Route>
+            <Route path="/preferences">
+              <Preferences />
+            </Route>
+          </Routes>
+        </BrowserRouter>
+      </div>
+      </Router>
+    );
+  }
 
 const App = () => {
   const [posts, setPosts] = useState([])
@@ -19,7 +51,7 @@ const App = () => {
   useEffect(() => {
     const fetchPosts = async () => {
       try{
-        const response = await api.get('https://localhost:8000/getAllPosts')
+        const response = await api.get('/getAllPosts')
         setPosts(response.data)
       } catch (err) {
         if (err.response) {
